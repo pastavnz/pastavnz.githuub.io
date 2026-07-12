@@ -419,13 +419,13 @@ function initDriverApp() {
 
   // Must match the vehicle ids referenced in ROUTES below.
   const VEHICLES = [
-    {id:'1042', route:'Route 1 · Riverside',      cap:60, color:'#F2A93B'},
-    {id:'1047', route:'Route 1 · Riverside',      cap:60, color:'#F2A93B'},
-    {id:'2011', route:'Route 2 · Harborline',     cap:45, color:'#2DD4BF'},
-    {id:'2016', route:'Route 2 · Harborline',     cap:45, color:'#2DD4BF'},
-    {id:'3003', route:'Route 3 · Highline Loop',  cap:70, color:'#FB7185'},
-    {id:'3008', route:'Route 3 · Highline Loop',  cap:70, color:'#FB7185'},
-    {id:'4020', route:'Route 4 · Airport Express',cap:80, color:'#A78BFA'},
+    {id:'CXZ 345', route:'Route 1 · Balanga - Orani',      cap:60, color:'#F2A93B'},
+    {id:'TGH 067', route:'Route 1 · Orani - Balanga',      cap:60, color:'#F2A93B'},
+    {id:'GTA 314', route:'Route 2 · Balanga - Abucay',     cap:45, color:'#2DD4BF'},
+    {id:'FYM 241', route:'Route 2 · Abucay - Balanga',     cap:45, color:'#2DD4BF'},
+    {id:'BRO 436', route:'Route 3 · Balanga - Dinalupihan',  cap:70, color:'#FB7185'},
+    {id:'BTN 547', route:'Route 3 · Dinalupihan - Balanga',  cap:70, color:'#FB7185'},
+    {id:'UGH 069', route:'Route 4 · Arellano',cap:80, color:'#A78BFA'},
   ];
 
   const vehicleSelect = document.getElementById('vehicleSelect');
@@ -577,28 +577,28 @@ function initPassengerApp(){
 
   const ROUTES = [
     {
-      id:'R1', name:'Route 1 · Riverside', color:'#F2A93B',
+      id:'R1', name:'Route 1 · Balanga to Orani Vice Versa', color:'#F2A93B',
       stops:[
-        {name:'Riverside Terminal', lat:14.6055, lng:121.0110},
-        {name:'Market Cross',       lat:14.6090, lng:121.0165},
-        {name:'City Hall',          lat:14.6135, lng:121.0210},
-        {name:'North Plaza',        lat:14.6180, lng:121.0175},
-        {name:'University Gate',    lat:14.6150, lng:121.0100},
-        {name:'Riverside Terminal', lat:14.6055, lng:121.0110},
+        {name:'Balanga Terminal', lat:14.681929, lng:120.537730},
+        {name:'Abucay Plaza',       lat:14.722207, lng:120.535346},
+        {name:'Mabatang Plaza',          lat:14.740619, lng:120.537593},
+        {name:'Samal Plaza',        lat:14.769267, lng:120.542891},
+        {name:'Orani Plaza',    lat:14.800930, lng:120.536083},
+        {name:'Orani Terminal', lat:14.801301, lng:120.537062},
       ],
-      vehicles:[ {id:'1042', cap:60, occ:22}, {id:'1047', cap:60, occ:51} ]
+      vehicles:[ {id:'CXZ 345', cap:20, occ:2}, {id:'TGH 067', cap:24, occ:2} ]
     },
     {
-      id:'R2', name:'Route 2 · Harborline', color:'#2DD4BF',
+      id:'R2', name:'Route 2 · Balanga-Abucay', color:'#2DD4BF',
       stops:[
-        {name:'Harbor Depot',      lat:14.5985, lng:121.0230},
+        {name:'Balanga Terminal',      lat:14.689518, lng:120.538696},
         {name:'Fish Market',       lat:14.6010, lng:121.0290},
         {name:'East Terminal',     lat:14.6070, lng:121.0320},
         {name:'Grand Station',     lat:14.6120, lng:121.0270},
         {name:'Old Bridge',        lat:14.6050, lng:121.0225},
         {name:'Harbor Depot',      lat:14.5985, lng:121.0230},
       ],
-      vehicles:[ {id:'2011', cap:45, occ:39}, {id:'2016', cap:45, occ:8} ]
+      vehicles:[ {id:'GTA 314', cap:45, occ:39}, {id:'FYM 241', cap:45, occ:8} ]
     },
     {
       id:'R3', name:'Route 3 · Highline Loop', color:'#FB7185',
