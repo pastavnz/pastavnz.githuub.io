@@ -393,7 +393,28 @@ document.getElementById('passengerBack').addEventListener('click', ()=> location
 /* ============================================================
    DRIVER APP
    ============================================================ */
-function initDriverApp(){
+function initDriverApp() {
+    // 👇 ADD THIS TEST LISTENENER AT THE TOP OF THE FUNCTION 👇
+    document.getElementById('btn-test-send').addEventListener('click', () => {
+        console.log("Forcing database write...");
+        database.ref('drivers/bus_1').set({
+            latitude: 14.5995,
+            longitude: 120.9842,
+            timestamp: Date.now()
+        }).then(() => {
+            alert("Database write successful! Check your Firebase tab.");
+        }).catch((error) => {
+            alert("Firebase rejected it! Error: " + error.message);
+        });
+    });
+
+    // (Leave the rest of your original map and navigator.geolocation code below it)
+    const map = L.map('driver-map').setView([0, 0], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    // ... rest of code
+}
+
+{
 
   // Must match the vehicle ids referenced in ROUTES below.
   const VEHICLES = [
