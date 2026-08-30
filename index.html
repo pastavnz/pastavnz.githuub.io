@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Farebox</title>
+<title>TrackNRide</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -31,9 +31,42 @@
   #landing .mark{ font-size:32px; }
   .landing-sub{
     font-family:var(--mono); font-size:11.5px; color:var(--text-dim);
-    letter-spacing:1.5px; text-transform:uppercase; margin-top:-16px;
+    letter-spacing:1.5px; text-transform:uppercase; margin-top:-5px;
   }
   .role-buttons{ display:flex; flex-direction:column; gap:14px; width:100%; max-width:320px; }
+
+  /* ================= PIN GATE ================= */
+  #pinGate{
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:24px; padding:24px; text-align:center;
+  }
+  #pinGate .mark{ font-size:22px; }
+  .pin-title{
+    font-family:var(--mono); font-size:11px; color:var(--text-dim);
+    letter-spacing:1.5px; text-transform:uppercase; margin-top:6px;
+  }
+  .pin-dots{ display:flex; gap:14px; }
+  .pin-dot{
+    width:14px; height:14px; border-radius:50%; border:1.5px solid var(--line);
+    background:transparent; transition:background .12s, border-color .12s;
+  }
+  .pin-dot.filled{ background:var(--amber); border-color:var(--amber); }
+  .pin-dots.shake{ animation:pinShake .35s; }
+  @keyframes pinShake{
+    10%,90%{ transform:translateX(-1px); } 20%,80%{ transform:translateX(2px); }
+    30%,50%,70%{ transform:translateX(-4px); } 40%,60%{ transform:translateX(4px); }
+  }
+  .pin-error{ font-family:var(--mono); font-size:11px; color:var(--bad); height:14px; }
+  .pin-keypad{ display:grid; grid-template-columns:repeat(3,64px); gap:14px; }
+  .pin-key{
+    width:64px; height:64px; border-radius:50%; border:1px solid var(--line);
+    background:var(--bg-panel); color:var(--text-hi); font-family:var(--disp);
+    font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .pin-key:active{ background:var(--bg-raised); border-color:var(--amber); }
+  .pin-key.ghost{ visibility:hidden; cursor:default; }
+  .pin-back{ background:none; border:none; color:var(--text-dim); font-size:13px; cursor:pointer; font-family:var(--mono); letter-spacing:0.5px; }
+  .pin-back:hover{ color:var(--text-hi); }
   .role-btn{
     padding:20px; border-radius:14px; border:1px solid var(--line); background:var(--bg-panel);
     color:var(--text-hi); cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:4px;
@@ -98,6 +131,13 @@
 
   #driverApp .hint{ font-family:var(--body); font-size:12.5px; color:var(--text-dim); line-height:1.5; }
   #driverApp .hint b{ color:var(--text-mid); }
+
+  #driverApp .res-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  #driverApp .res-num{ font-family:var(--disp); font-weight:700; font-size:30px; line-height:1; }
+  #driverApp .res-sub{ font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-top:2px; }
+  #driverApp .res-free{ font-family:var(--body); font-size:12.5px; color:var(--text-mid); margin-top:10px; }
+  #driverApp .res-free b{ color:var(--text-hi); }
+  #driverApp #clearResBtn{ flex:none; padding:10px 16px; }
 
   /* ================= PASSENGER ================= */
   #passengerApp{ display:flex; flex-direction:column; height:100vh; overflow:hidden; }
@@ -214,6 +254,13 @@
 
   .detail-section-label{ font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); margin:4px 0 10px; }
 
+  .reserve-box{ background:var(--bg-raised); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:6px; }
+  .reserve-stats{ display:flex; justify-content:space-between; font-family:var(--mono); font-size:12px; color:var(--text-mid); margin-bottom:10px; }
+  .reserve-stats b{ color:var(--text-hi); }
+  .reserve-btn{ width:100%; padding:13px; border:none; border-radius:9px; font-family:var(--disp); font-weight:600; font-size:14px; cursor:pointer; background:var(--amber); color:#1A1300; transition:background .2s, color .2s; }
+  .reserve-btn.reserved{ background:var(--bg-panel); color:var(--rose); border:1px solid var(--rose); }
+  .reserve-btn:disabled{ background:var(--line); color:var(--text-dim); cursor:not-allowed; }
+
   ::-webkit-scrollbar{ width:8px; }
   ::-webkit-scrollbar-track{ background:transparent; }
   ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
@@ -237,7 +284,7 @@
 <!-- ================= LANDING / ROLE PICKER ================= -->
 <div id="landing">
   <div>
-    <div class="mark">FARE<span>BOX</span></div>
+    <div class="mark">Track<span>N</span>Ride</div>
     <div class="landing-sub">live occupancy transit</div>
   </div>
   <div class="role-buttons">
@@ -252,10 +299,37 @@
   </div>
 </div>
 
+<!-- ================= DRIVER PIN GATE ================= -->
+<div id="pinGate" class="hidden">
+  <div>
+    <div class="mark">Track<span>N</span>Ride</div>
+    <div class="pin-title">Driver access · enter PIN</div>
+  </div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div class="pin-error" id="pinError"></div>
+  <div class="pin-keypad">
+    <button class="pin-key" data-num="1">1</button>
+    <button class="pin-key" data-num="2">2</button>
+    <button class="pin-key" data-num="3">3</button>
+    <button class="pin-key" data-num="4">4</button>
+    <button class="pin-key" data-num="5">5</button>
+    <button class="pin-key" data-num="6">6</button>
+    <button class="pin-key" data-num="7">7</button>
+    <button class="pin-key" data-num="8">8</button>
+    <button class="pin-key" data-num="9">9</button>
+    <button class="pin-key ghost" tabindex="-1"></button>
+    <button class="pin-key" data-num="0">0</button>
+    <button class="pin-key" id="pinDelete">⌫</button>
+  </div>
+  <button class="pin-back" id="pinBack">← Back</button>
+</div>
+
 <!-- ================= DRIVER VIEW ================= -->
 <div id="driverApp" class="hidden">
   <header>
-    <div class="mark">FARE<span>BOX</span></div>
+    <div class="mark">Track<span>N</span>Ride</div>
     <div style="display:flex; align-items:center; gap:8px;">
       <div class="role-tag">Driver console</div>
       <button class="switch-role" id="driverBack" title="Switch role">⟲</button>
@@ -279,11 +353,19 @@
     </div>
     <div class="occ-track"><div class="occ-fill" id="occFill" style="width:0%; background:var(--ok)"></div></div>
     <div class="occ-readout"><span id="occLabel">Low</span><span id="occPct">0%</span></div>
-    <div class="quick-row">
-      <div class="quick-btn" data-pct="20">Quiet</div>
-      <div class="quick-btn" data-pct="55">Filling up</div>
-      <div class="quick-btn" data-pct="90">Nearly full</div>
+
+  </div>
+
+  <div class="card">
+    <div class="label">Seat reservations</div>
+    <div class="res-row">
+      <div>
+        <div class="res-num" id="resNum">0</div>
+        <div class="res-sub">passenger(s) reserved</div>
+      </div>
+      <button class="quick-btn" id="clearResBtn">Clear</button>
     </div>
+    <div class="res-free">Free spaces left: <b id="resFree">—</b></div>
   </div>
 
   <div class="card">
@@ -300,7 +382,7 @@
     <div class="hint">
       Keep this screen open and your phone unlocked while driving.
       Passengers see your live position and crowding on the
-      <b>Farebox</b> map as soon as you go live.
+      <b>TrackNRide</b> map as soon as you go live.
     </div>
   </div>
 </div>
@@ -315,13 +397,14 @@
     <div id="driver-map" style="height: 400px;"></div>
 </div>
 
+</div>
 <!-- ================= PASSENGER VIEW ================= -->
 <div id="passengerApp" class="hidden">
   <div id="topbar">
     <div style="display:flex; align-items:center;">
       <button id="menuBtn">☰</button>
       <div class="brand">
-        <div class="mark">FARE<span>BOX</span></div>
+        <div class="mark">Track<span>N</span>Ride</div>
         <div class="tag">live occupancy transit</div>
       </div>
     </div>
@@ -356,21 +439,19 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-/* ============================================================
-   FIREBASE SETUP — one project/database shared by both views.
-   Get this from: Firebase Console → Project Settings → General →
-   "Your apps" → Web app → SDK setup and configuration.
-   ============================================================ */
+  
+/*FireBase*/
 const firebaseConfig = {
-  apiKey: "AIzaSyCUTC9QHm6RmtSgz7h_wjlQN8Mf0N2Ol-I",
-  authDomain: "transit-tracker-demo.firebaseapp.com",
-  databaseURL: "https://transit-tracker-demo-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "transit-tracker-demo",
-  storageBucket: "transit-tracker-demo.firebasestorage.app",
-  messagingSenderId: "143210079906",
-  appId: "1:143210079906:web:8e83ec7ce4e74461edd9fb",
-  measurementId: "G-4PE5S43SE1"
+  apiKey: "AIzaSyBwfqtDU-M-Go0I3WvGU5zQVtytNegDjo0",
+  authDomain: "tracknride-48930.firebaseapp.com",
+  databaseURL: "https://tracknride-48930-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tracknride-48930",
+  storageBucket: "tracknride-48930.firebasestorage.app",
+  messagingSenderId: "336863688796",
+  appId: "1:336863688796:web:afa04bfad842ebb0828e99",
+  measurementId: "G-8VS1DGTB8B"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
@@ -384,10 +465,61 @@ document.getElementById('choosePassenger').addEventListener('click', ()=>{
 });
 document.getElementById('chooseDriver').addEventListener('click', ()=>{
   document.getElementById('landing').classList.add('hidden');
-  document.getElementById('driverApp').classList.remove('hidden');
-  if(!driverStarted){ driverStarted = true; initDriverApp(); }
+  document.getElementById('pinGate').classList.remove('hidden');
 });
 document.getElementById('driverBack').addEventListener('click', ()=> location.reload());
+
+/* ---------- driver PIN gate ---------- */
+const DRIVER_PIN = '6769'; // change this to whatever 4-digit code your drivers should use
+let enteredPin = '';
+
+function updatePinDots(){
+  document.querySelectorAll('#pinDots .pin-dot').forEach((dot,i)=>{
+    dot.classList.toggle('filled', i < enteredPin.length);
+  });
+}
+function resetPin(){
+  enteredPin = '';
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+}
+function showPinError(){
+  document.getElementById('pinError').textContent = 'Incorrect PIN';
+  const dots = document.getElementById('pinDots');
+  dots.classList.remove('shake');
+  void dots.offsetWidth; // restart the shake animation
+  dots.classList.add('shake');
+  setTimeout(resetPin, 420);
+}
+
+document.querySelectorAll('.pin-key[data-num]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(enteredPin.length >= 4) return;
+    enteredPin += btn.dataset.num;
+    updatePinDots();
+    if(enteredPin.length === 4){
+      if(enteredPin === DRIVER_PIN){
+        setTimeout(()=>{
+          document.getElementById('pinGate').classList.add('hidden');
+          document.getElementById('driverApp').classList.remove('hidden');
+          if(!driverStarted){ driverStarted = true; initDriverApp(); }
+          resetPin();
+        }, 150);
+      } else {
+        showPinError();
+      }
+    }
+  });
+});
+document.getElementById('pinDelete').addEventListener('click', ()=>{
+  enteredPin = enteredPin.slice(0, -1);
+  updatePinDots();
+});
+document.getElementById('pinBack').addEventListener('click', ()=>{
+  resetPin();
+  document.getElementById('pinGate').classList.add('hidden');
+  document.getElementById('landing').classList.remove('hidden');
+});
 document.getElementById('passengerBack').addEventListener('click', ()=> location.reload());
 
 
@@ -419,13 +551,13 @@ function initDriverApp() {
 
   // Must match the vehicle ids referenced in ROUTES below.
   const VEHICLES = [
-    {id:'CXZ 345', route:'Route 1 · Balanga - Orani',      cap:60, color:'#F2A93B'},
-    {id:'TGH 067', route:'Route 1 · Orani - Balanga',      cap:60, color:'#F2A93B'},
-    {id:'GTA 314', route:'Route 2 · Balanga - Abucay',     cap:45, color:'#2DD4BF'},
-    {id:'FYM 241', route:'Route 2 · Abucay - Balanga',     cap:45, color:'#2DD4BF'},
-    {id:'BRO 436', route:'Route 3 · Balanga - Dinalupihan',  cap:70, color:'#FB7185'},
-    {id:'BTN 547', route:'Route 3 · Dinalupihan - Balanga',  cap:70, color:'#FB7185'},
-    {id:'UGH 069', route:'Route 4 · Arellano',cap:80, color:'#A78BFA'},
+    {id:'CXZ 345', route:'Route 1 · Balanga - Mariveles',      cap:50, color:'#F2A93B'},
+    {id:'TGH 067', route:'Route 1 · Orani - Balanga',      cap:20, color:'#F2A93B'},
+    {id:'GTA 314', route:'Route 2 · Balanga - Abucay',     cap:20, color:'#2DD4BF'},
+    {id:'FYM 241', route:'Route 2 · Abucay - Balanga',     cap:20, color:'#2DD4BF'},
+    {id:'BRO 436', route:'Route 3 · Balanga - Dinalupihan',  cap:20, color:'#FB7185'},
+    {id:'BTN 547', route:'Route 3 · Dinalupihan - Balanga',  cap:20, color:'#FB7185'},
+    {id:'UGH 069', route:'Route 4 · Arellano',cap:20, color:'#A78BFA'},
   ];
 
   const vehicleSelect = document.getElementById('vehicleSelect');
@@ -458,12 +590,38 @@ function initDriverApp() {
     document.getElementById('occLabel').textContent = lvl.label;
     document.getElementById('occLabel').style.color = lvl.c;
     document.getElementById('occPct').textContent = pct + '%';
+    refreshResUI();
   }
+
+  /* ---------- seat reservations (driver side) ---------- */
+  let resListenerRef = null; // Firebase ref we currently have a .on('value') listener attached to
+  let lastResCount = 0;      // most recent reservation count we heard from Firebase for currentVehicle
+
+  function refreshResUI(){
+    const free = Math.max(0, currentVehicle.cap - pax - lastResCount);
+    document.getElementById('resNum').textContent = lastResCount;
+    document.getElementById('resFree').textContent = free;
+  }
+
+  function bindReservationListener(){
+    if(resListenerRef) resListenerRef.off(); // stop listening to the previous vehicle's reservations
+    lastResCount = 0;
+    resListenerRef = db.ref('reservations/' + currentVehicle.id);
+    resListenerRef.on('value', snap=>{
+      lastResCount = snap.exists() ? snap.val() : 0;
+      refreshResUI();
+    });
+  }
+
+  document.getElementById('clearResBtn').addEventListener('click', ()=>{
+    db.ref('reservations/' + currentVehicle.id).set(0);
+  });
 
   vehicleSelect.addEventListener('change', ()=>{
     currentVehicle = VEHICLES.find(v=>v.id === vehicleSelect.value);
     pax = 0;
     refreshOccUI();
+    bindReservationListener();
   });
 
   document.getElementById('plusBtn').addEventListener('click', ()=>{
@@ -482,6 +640,7 @@ function initDriverApp() {
     });
   });
   refreshOccUI();
+  bindReservationListener();
 
   /* ---------- mini map (driver's own position preview) ---------- */
   const map = L.map('miniMap', { zoomControl:false, attributionControl:true, dragging:false, scrollWheelZoom:false })
@@ -519,6 +678,9 @@ function initDriverApp() {
     // If this tab loses connection or closes without pressing "stop",
     // Firebase removes the vehicle entry automatically.
     db.ref('vehicles/' + currentVehicle.id).onDisconnect().remove();
+    // Same safety net for reservations, and start this trip with a clean count.
+    db.ref('reservations/' + currentVehicle.id).onDisconnect().remove();
+    db.ref('reservations/' + currentVehicle.id).set(0);
 
     watchId = navigator.geolocation.watchPosition(
       (pos)=>{
@@ -556,6 +718,8 @@ function initDriverApp() {
     vehicleSelect.disabled = false;
     db.ref('vehicles/' + currentVehicle.id).onDisconnect().cancel();
     db.ref('vehicles/' + currentVehicle.id).remove();
+    db.ref('reservations/' + currentVehicle.id).onDisconnect().cancel();
+    db.ref('reservations/' + currentVehicle.id).remove();
   }
 
   goLiveBtn.addEventListener('click', ()=>{
@@ -577,52 +741,42 @@ function initPassengerApp(){
 
   const ROUTES = [
     {
-      id:'R1', name:'Route 1 · Balanga to Orani', color:'#F2A93B',
+      id:'R1', name:'Route 1 · Balanga to Mariveles Vice Versa', color:'#F2A93B',
       stops:[
-        {name:'Balanga Terminal', lat:14.681929, lng:120.537730},
-        {name:'Abucay Plaza',       lat:14.722207, lng:120.535346},
-        {name:'Mabatang Plaza',          lat:14.740619, lng:120.537593},
-        {name:'Samal Plaza',        lat:14.769267, lng:120.542891},
-        {name:'Orani Plaza',    lat:14.800930, lng:120.536083},
-        {name:'Orani Terminal', lat:14.801301, lng:120.537062},
+        {name:'Balanga Terminal', lat:14.681890, lng:120.537403},
+        {name:'Mariveles Terminal', lat:14.441977310874933, lng:120.50149318493439},
       ],
-      vehicles:[ {id:'CXZ 345', cap:20, occ:2}, {id:'TGH 067', cap:24, occ:2} ]
-    },
+      vehicles:[ {id:'CXZ 345', cap:50, occ:2}, {id:'TGH 067', cap:50, occ:2} ]
+      },
     {
       id:'R2', name:'Route 2 · Balanga-Abucay', color:'#2DD4BF',
       stops:[
-        {name:'Balanga Terminal',  lat:14.681929, lng:120.537730},
+        {name:'Balanga Terminal',  lat:14.681890, lng:120.537403},
         {name:'Four Lanes',       lat:14.689518, lng:120.538696},
-        {name:'Tuyo Elementary School',     lat:14.6070, lng:121.0320},
-        {name:'Capitangan Plaza',     lat:14.6120, lng:121.0270},
-        {name:'Abucay Plaza',        lat:14.6050, lng:121.0225},
-        {name:'New Abucay Municipal Hall',      lat:14.5985, lng:121.0230},
+        {name:'Abucay Plaza',     lat:14.729621, lng:120.535659},
       ],
       vehicles:[ {id:'GTA 314', cap:45, occ:39}, {id:'FYM 241', cap:45, occ:8} ]
     },
     {
-      id:'R3', name:'Route 3 · Highline Loop', color:'#FB7185',
+      id:'R3', name:'Route 3 · Balanga - Dinalupihan', color:'#FB7185',
       stops:[
-        {name:'Highline North',    lat:14.6225, lng:121.0055},
-        {name:'Garden District',   lat:14.6205, lng:121.0000},
-        {name:'West Commons',      lat:14.6150, lng:120.9960},
-        {name:'Lower Yard',        lat:14.6100, lng:121.0015},
-        {name:'Highline South',    lat:14.6165, lng:121.0075},
-        {name:'Highline North',    lat:14.6225, lng:121.0055},
+        {name:'Balanga Terminal',  lat:14.681890, lng:120.537403},
+        {name:'Penelco',   lat:14.687868, lng:120.517681},
+        {name:'Altierra',      lat:14.698879, lng:120.516409},
+        {name:'Gugo',        lat:14.760555, lng:120.498551},
+        {name:'Kanto ng Orani',    lat:14.790523, lng:120.491041},
+        {name:'Hermosa Terminal',    lat:14.843380, lng:120.476018},
+        {name:'Dinalupihan Terminal',    lat:14.867337, lng:120.465420},
       ],
-      vehicles:[ {id:'3003', cap:70, occ:63}, {id:'3008', cap:70, occ:70} ]
+      vehicles:[ {id:'BRO 436', cap:70, occ:63}, {id:'BTN 547', cap:70, occ:70} ]
     },
     {
-      id:'R4', name:'Route 4 · Airport Express', color:'#A78BFA',
+      id:'R4', name:'Route 4 · Arellano  ', color:'#A78BFA',
       stops:[
-        {name:'Central Interchange', lat:14.6040, lng:121.0140},
-        {name:'Trade Center',        lat:14.5960, lng:121.0180},
-        {name:'Freight Yard',        lat:14.5900, lng:121.0130},
-        {name:'Airport Terminal',    lat:14.5875, lng:121.0060},
-        {name:'South Gate',          lat:14.5975, lng:121.0075},
-        {name:'Central Interchange', lat:14.6040, lng:121.0140},
+        {name:'Balanga Terminal',  lat:14.681890, lng:120.537403},
+        {name:'Arellano',        lat:14.677378, lng:120.520593},
       ],
-      vehicles:[ {id:'4020', cap:80, occ:12} ]
+      vehicles:[ {id:'UGH 069', cap:80, occ:12} ]
     }
   ];
 
@@ -632,6 +786,42 @@ function initPassengerApp(){
     return {c:'var(--bad)', label:'Crowded'};
   }
   function occPct(v){ return Math.round((v.occ / v.cap) * 100); }
+
+  /* ---------- seat reservations (passenger side) ---------- */
+  function reservationKey(vehId){ return 'tnr_reservation_' + vehId; }
+  function iHaveReserved(vehId){ return localStorage.getItem(reservationKey(vehId)) === '1'; }
+
+  async function reserveSeat(route, vdata){
+    const limit = vdata.cap - vdata.occ; // seats not already filled by boarded passengers
+    try{
+      const result = await db.ref('reservations/' + vdata.id).transaction(current=>{
+        const count = current || 0;
+        if(count >= limit) return; // returning undefined aborts the transaction - bus is full
+        return count + 1;
+      });
+      if(result.committed){
+        vdata.reservations = result.snapshot.val();
+        localStorage.setItem(reservationKey(vdata.id), '1');
+      } else {
+        alert('Sorry, this bus is fully booked - no free spaces left to reserve.');
+      }
+    }catch(e){
+      alert('Could not reserve a seat right now. Please try again.');
+    }
+    renderDetail(route, vdata);
+  }
+
+  async function cancelSeat(route, vdata){
+    try{
+      const result = await db.ref('reservations/' + vdata.id).transaction(current=>{
+        const count = current || 0;
+        return Math.max(0, count - 1);
+      });
+      if(result.committed) vdata.reservations = result.snapshot.val();
+    }catch(e){ /* ignore - we still clear the local flag below */ }
+    localStorage.removeItem(reservationKey(vdata.id));
+    renderDetail(route, vdata);
+  }
 
   function nearestSegment(stops, lat, lng){
     if(lat == null || lng == null) return 0;
@@ -674,11 +864,33 @@ function initPassengerApp(){
 
   let selectedVehicleId = null;
 
+  // Snaps a route's stops to real road geometry using OSRM's free public
+  // routing API. Falls back to straight lines between stops if the request
+  // fails — e.g. this artifact preview sandbox blocks outside network calls,
+  // but this works normally once the file is hosted on your own domain.
+  async function fetchRoadPath(stops){
+    try{
+      const coordStr = stops.map(s => `${s.lng},${s.lat}`).join(';');
+      const url = `https://router.project-osrm.org/route/v1/driving/${coordStr}?overview=full&geometries=geojson`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if(data && data.code === 'Ok' && data.routes && data.routes[0]){
+        return data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+      }
+    }catch(e){ /* network blocked — use fallback below */ }
+    return stops.map(s => [s.lat, s.lng]);
+  }
+
   ROUTES.forEach(route=>{
-    const latlngs = route.stops.map(s=>[s.lat, s.lng]);
-    L.polyline(latlngs, { color:route.color, weight:4, opacity:0.85, dashArray:'1 8', lineCap:'round' }).addTo(map);
+    const straight = route.stops.map(s=>[s.lat, s.lng]);
+    const line = L.polyline(straight, { color:route.color, weight:4, opacity:0.85, lineCap:'round' }).addTo(map);
+    fetchRoadPath(route.stops).then(roadCoords => line.setLatLngs(roadCoords));
+
+    const isClosedLoop = route.stops.length > 1 &&
+      route.stops[0].lat === route.stops[route.stops.length-1].lat &&
+      route.stops[0].lng === route.stops[route.stops.length-1].lng;
     route.stops.forEach((s,i)=>{
-      if(i === route.stops.length-1) return;
+      if(isClosedLoop && i === route.stops.length-1) return; // don't double-draw the closing stop
       L.circleMarker([s.lat,s.lng], {
         radius:4, color:route.color, weight:2, fillColor:'#FFFFFF', fillOpacity:1
       }).addTo(map);
@@ -785,6 +997,20 @@ function initPassengerApp(){
       upcoming.push({ name: route.stops[(segIdx+i) % (route.stops.length-1) + 1].name, eta: i*3 + Math.floor(Math.random()*2) });
     }
 
+    const reservations = vdata.reservations || 0;
+    const freeSpace = Math.max(0, vdata.cap - vdata.occ - reservations);
+    const already = iHaveReserved(vdata.id);
+    let btnLabel, btnClass = '', btnDisabled = false;
+    if(already){
+      btnLabel = 'Cancel my reservation';
+      btnClass = 'reserved';
+    } else if(freeSpace <= 0){
+      btnLabel = 'Fully booked';
+      btnDisabled = true;
+    } else {
+      btnLabel = 'Reserve a seat';
+    }
+
     detailBody.innerHTML = `
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
         <div class="route-chip" style="background:${route.color}; height:18px;"></div>
@@ -805,16 +1031,22 @@ function initPassengerApp(){
       <div class="detail-section-label">Cabin view</div>
       <div class="car-diagram">${seatsHTML}</div>
 
-      <div class="detail-section-label">Upcoming stops</div>
-      <ul class="stop-list">
-        ${upcoming.map((s,i)=>`
-          <li class="stop-item${i===0?' next':''}">
-            <div class="stop-dot"></div>
-            <div class="stop-name">${s.name}</div>
-            <div class="stop-eta">${s.eta} min</div>
-          </li>`).join('')}
-      </ul>
+      <div class="detail-section-label">Seat reservation</div>
+      <div class="reserve-box">
+        <div class="reserve-stats">
+          <span><b>${reservations}</b> reserved</span>
+          <span><b>${freeSpace}</b> free</span>
+        </div>
+        <button class="reserve-btn ${btnClass}" id="reserveBtn" ${btnDisabled ? 'disabled' : ''}>${btnLabel}</button>
+      </div>
     `;
+
+    const reserveBtn = document.getElementById('reserveBtn');
+    if(reserveBtn){
+      reserveBtn.addEventListener('click', ()=>{
+        if(already) cancelSeat(route, vdata); else reserveSeat(route, vdata);
+      });
+    }
   }
 
   document.getElementById('closeDetail').addEventListener('click', ()=>{
@@ -852,6 +1084,15 @@ function initPassengerApp(){
     }
   }
 
+  async function fetchReservationCount(id){
+    try{
+      const snap = await db.ref('reservations/' + id).once('value');
+      return snap.exists() ? snap.val() : 0;
+    }catch(e){
+      return 0;
+    }
+  }
+
   async function tick(){
     let selectedWentOffline = false;
     for(const route of ROUTES){
@@ -863,6 +1104,7 @@ function initPassengerApp(){
           vdata.isLive = true;
           vdata.occ = Math.round((live.occupancyPct/100) * vdata.cap);
           vdata.lat = live.lat; vdata.lng = live.lng;
+          vdata.reservations = await fetchReservationCount(vdata.id);
           const pos = [live.lat, live.lng];
           const pct = occPct(vdata);
 
